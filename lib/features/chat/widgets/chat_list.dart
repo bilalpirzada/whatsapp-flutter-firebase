@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:whatsapp_ui/common/Loader.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
 import 'package:whatsapp_ui/info.dart';
-import 'package:whatsapp_ui/widgets/my_message_card.dart';
-import 'package:whatsapp_ui/widgets/sender_message_card.dart';
+import 'package:whatsapp_ui/features/chat/widgets/my_message_card.dart';
+import 'package:whatsapp_ui/features/chat/widgets/sender_message_card.dart';
 
 import '../../../models/message.dart';
 
@@ -54,11 +54,13 @@ class _ChatListState extends ConsumerState<ChatList> {
               if (messageData.senderId ==
                   FirebaseAuth.instance.currentUser!.uid) {
                 return MyMessageCard(
+                  type: messageData.type,
                   message: messageData.text,
                   date: timeSent,
                 );
               }
               return SenderMessageCard(
+                type: messageData.type,
                 message: messageData.text,
                 date: timeSent,
               );

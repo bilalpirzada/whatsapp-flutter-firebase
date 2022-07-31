@@ -231,7 +231,7 @@ class ChatRepository {
       }
       _saveDataToContactsSubcollection(
         senderUserData,
-        recieverUserData!,
+        recieverUserData,
         contactMsg,
         timeSent,
         recieverUserId,
