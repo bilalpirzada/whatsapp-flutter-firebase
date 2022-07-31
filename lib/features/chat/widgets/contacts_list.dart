@@ -7,7 +7,7 @@ import 'package:whatsapp_ui/info.dart';
 import 'package:whatsapp_ui/features/chat/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
 
-import '../common/Loader.dart';
+import '../../../common/Loader.dart';
 
 class ContactsList extends ConsumerWidget {
   const ContactsList({Key? key}) : super(key: key);
