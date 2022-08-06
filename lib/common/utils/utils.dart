@@ -37,3 +37,4 @@ Future<File?> pickVideoFromGallery(BuildContext context) async {
   }
   return video;
 }
+

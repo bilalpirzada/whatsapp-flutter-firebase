@@ -3,6 +3,8 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/select_contacts/repository/select_contact_repository.dart';
 
+import '../../../models/user_model.dart';
+
 final selectContactControllerProvider = Provider((ref) {
   final selectContactrepository = ref.watch(selectContactrepositoryProvider);
   return SelectContactController(ref, selectContactrepository);

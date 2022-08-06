@@ -20,13 +20,30 @@ class ChatList extends ConsumerStatefulWidget {
 }
 
 class _ChatListState extends ConsumerState<ChatList> {
-  final ScrollController messageController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollToBottom();
+  }
+
+  Future<void> scrollToBottom() async {
+    if (_scrollController.hasClients) {
+      await _scrollController.animateTo(
+       5000,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+  }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    messageController.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -40,12 +57,12 @@ class _ChatListState extends ConsumerState<ChatList> {
           }
 
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            messageController
-                .jumpTo(messageController.position.maxScrollExtent);
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
           });
 
           return ListView.builder(
-            controller: messageController,
+            controller: _scrollController,
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final messageData = snapshot.data![index];

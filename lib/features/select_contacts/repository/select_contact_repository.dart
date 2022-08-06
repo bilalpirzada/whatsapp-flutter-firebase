@@ -22,7 +22,6 @@ class SelectContactrepository {
 
   Future<List<Contact>> getContacts() async {
     List<Contact> contacts = [];
- 
 
     try {
       if (await FlutterContacts.requestPermission()) {
@@ -32,6 +31,7 @@ class SelectContactrepository {
       debugPrint(e.toString());
     }
 
+   
 
     return contacts;
   }
@@ -47,6 +47,11 @@ class SelectContactrepository {
 
         String selectedPhoneNum =
             selectedContact.phones[0].number.replaceAll(' ', '');
+        String editedNumber = "";
+        if (selectedPhoneNum[0] == '0') {
+          selectedPhoneNum = "+92" + selectedPhoneNum.substring(1);
+        }
+
         if (selectedPhoneNum == userData.phoneNumber) {
           isFound = true;
           Navigator.pushNamed(context, MobileChatScreen.routeName, arguments: {
@@ -67,23 +72,27 @@ class SelectContactrepository {
   }
 
 //---------------
-  Future<bool> isContactExist(Contact selectedContact) async {
+  Future<UserModel> isContactExist(Contact selectedContact) async {
     bool isFound = false;
+    var userData;
     try {
       var userCollection = await firestore.collection("users").get();
 
       for (var document in userCollection.docs) {
         //converting the data into userModel
-        var userData = UserModel.fromMap(document.data());
-        for (int i = 0; i < selectedContact.phones.length; i++) {
-          String selectedPhoneNum =
-              selectedContact.phones[i].number.replaceAll(' ', '');
-          if (selectedPhoneNum == userData.phoneNumber) {
-            isFound = true;
-          }
+        var _userData = UserModel.fromMap(document.data());
+
+        String selectedPhoneNum =
+            selectedContact.phones[0].number.replaceAll(' ', '');
+        if (selectedPhoneNum[0] == '0') {
+          selectedPhoneNum = "+92" + selectedPhoneNum.substring(1);
+        }
+        if (selectedPhoneNum == _userData.phoneNumber) {
+          isFound = true;
+          userData = _userData;
         }
       }
     } catch (e) {}
-    return isFound;
+    return userData;
   }
 }

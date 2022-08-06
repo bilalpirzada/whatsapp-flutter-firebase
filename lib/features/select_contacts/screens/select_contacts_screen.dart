@@ -5,6 +5,7 @@ import 'package:whatsapp_ui/features/select_contacts/controller/select_contact_c
 
 import '../../../common/Loader.dart';
 import '../../../common/widgets/error.dart';
+import '../../../models/user_model.dart';
 
 class SelectContactsScreen extends ConsumerWidget {
   const SelectContactsScreen({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class SelectContactsScreen extends ConsumerWidget {
         .read(selectContactControllerProvider)
         .selectContact(selectedContact, context);
   }
+
+ 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +46,7 @@ class SelectContactsScreen extends ConsumerWidget {
                 itemCount: contactList.length,
                 itemBuilder: (context, index) {
                   final contact = contactList[index];
-
+                 
                   return InkWell(
                     onTap: () => selectContact(ref, contact, context),
                     child: Padding(
@@ -61,6 +64,7 @@ class SelectContactsScreen extends ConsumerWidget {
                                 backgroundImage: MemoryImage(contact.photo!),
                                 radius: 30,
                               ),
+                       
                       ),
                     ),
                   );
