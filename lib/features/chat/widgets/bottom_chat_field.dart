@@ -8,8 +8,10 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
+import 'package:whatsapp_ui/features/chat/widgets/message_reply_preview.dart';
 
 import '../../../common/enums/message_enum.dart';
 
@@ -155,8 +157,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
     return Column(
       children: [
+        isShowMessageReply ? const MessageReplyPreview() :const SizedBox(),
         Row(
           children: [
             Expanded(
@@ -187,9 +192,10 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                           children: [
                             IconButton(
                               onPressed: toggleEmojiKeyboardContainer,
-                              icon:  Icon(
-                                !isShowEmojiContainer ?
-                                Icons.emoji_emotions :Icons.keyboard_alt,
+                              icon: Icon(
+                                !isShowEmojiContainer
+                                    ? Icons.emoji_emotions
+                                    : Icons.keyboard_alt,
                                 color: Colors.grey,
                               ),
                             ),
@@ -249,13 +255,13 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                   backgroundColor: const Color(0xFF128C7E),
                   radius: 25,
                   child: Icon(
-                      isShowSendButton
-                          ? Icons.send
-                          : isRecording
-                              ? Icons.close
-                              : Icons.mic,
-                      color: Colors.white,
-                    ),
+                    isShowSendButton
+                        ? Icons.send
+                        : isRecording
+                            ? Icons.close
+                            : Icons.mic,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

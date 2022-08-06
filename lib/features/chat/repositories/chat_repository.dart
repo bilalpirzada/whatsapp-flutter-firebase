@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
 import 'package:whatsapp_ui/models/message.dart';
@@ -119,6 +120,9 @@ class ChatRepository {
     required String username,
     required String recieverUsername,
     required MessageEnum messageType,
+    required MessageReply? messageReply,
+    required String senderUsername,
+    required String recieverUserName,
   }) async {
     final message = Message(
         senderId: auth.currentUser!.uid,
@@ -128,9 +132,16 @@ class ChatRepository {
         timeSent: timeSent,
         messageId: messageId,
         isSeen: false,
-        repliedMessage: '',
-        repliedTo: 'repliedTo',
-        repliedMessageType: messageType);
+        repliedMessage: messageReply == null ? '' : messageReply.message,
+        repliedTo: messageReply == null
+            ? ''
+            : messageReply.isMe
+                ? senderUsername
+                : recieverUserName,
+        
+      repliedMessageType:
+          messageReply == null ? MessageEnum.text : messageReply.messageEnum,
+    );
 
     //users -> sender id -> reciever id -> messages -> message id -> store message
     await firestore
@@ -157,6 +168,7 @@ class ChatRepository {
     required String text,
     required String recieverUserId,
     required UserModel senderUser,
+    required MessageReply? messageReply,
   }) async {
     try {
       var timeSent = DateTime.now();
@@ -177,7 +189,11 @@ class ChatRepository {
           messageType: MessageEnum.text,
           messageId: messageId,
           recieverUsername: recieverUserData.name,
-          username: senderUser.name);
+          username: senderUser.name,
+          messageReply: messageReply,
+          recieverUserName: recieverUserData.name,
+          senderUsername: senderUser.name,
+          );
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
@@ -190,8 +206,8 @@ class ChatRepository {
     required UserModel senderUserData,
     required ProviderRef ref,
     required MessageEnum messageEnum,
-    // required MessageReply? messageReply,
-    //required bool isGroupChat,
+     required MessageReply? messageReply,
+    required bool isGroupChat,
   }) async {
     try {
       var timeSent = DateTime.now();
@@ -244,7 +260,11 @@ class ChatRepository {
           messageId: messageId,
           username: senderUserData.name,
           recieverUsername: recieverUserData.name,
-          messageType: messageEnum);
+          messageType: messageEnum,
+          messageReply: messageReply,
+          recieverUserName: recieverUserData.name,
+          senderUsername: senderUserData.name,
+          );
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

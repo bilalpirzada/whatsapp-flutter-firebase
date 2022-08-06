@@ -9,6 +9,8 @@ import 'package:whatsapp_ui/info.dart';
 import 'package:whatsapp_ui/features/chat/widgets/my_message_card.dart';
 import 'package:whatsapp_ui/features/chat/widgets/sender_message_card.dart';
 
+import '../../../common/enums/message_enum.dart';
+import '../../../common/providers/message_reply_provider.dart';
 import '../../../models/message.dart';
 
 class ChatList extends ConsumerStatefulWidget {
@@ -32,7 +34,7 @@ class _ChatListState extends ConsumerState<ChatList> {
   Future<void> scrollToBottom() async {
     if (_scrollController.hasClients) {
       await _scrollController.animateTo(
-       5000,
+        5000,
         curve: Curves.easeOut,
         duration: const Duration(milliseconds: 300),
       );
@@ -44,6 +46,20 @@ class _ChatListState extends ConsumerState<ChatList> {
     // TODO: implement dispose
     super.dispose();
     _scrollController.dispose();
+  }
+
+   void onMessageSwipe(
+    String message,
+    bool isMe,
+    MessageEnum messageEnum,
+  ) {
+    ref.read(messageReplyProvider.state).update(
+          (state) => MessageReply(
+            message,
+            isMe,
+            messageEnum,
+          ),
+        );
   }
 
   @override
@@ -74,12 +90,22 @@ class _ChatListState extends ConsumerState<ChatList> {
                   type: messageData.type,
                   message: messageData.text,
                   date: timeSent,
+                  repliedText: messageData.repliedMessage,
+                  username: messageData.repliedTo,
+                  repliedMessageType: messageData.repliedMessageType,
+                  onLeftSwipe: () => onMessageSwipe(messageData.text, true, messageData.type),
                 );
               }
               return SenderMessageCard(
                 type: messageData.type,
                 message: messageData.text,
                 date: timeSent,
+                repliedText: messageData.repliedMessage,
+                username: messageData.repliedTo,
+                repliedMessageType: messageData.repliedMessageType,
+                  onRightSwipe: () =>
+                    onMessageSwipe(messageData.text, false, messageData.type),
+               
               );
             },
           );

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/chat/repositories/chat_repository.dart';
 
@@ -33,12 +34,15 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref.read(userDataAuthProvider).whenData((value) =>
         chatRepository.sendTextMessage(
             context: context,
             text: text,
             recieverUserId: recieverUserId,
+            messageReply: messageReply,
             senderUser: value!));
+            ref.read(messageReplyProvider.state).update((state) => null);
   }
 
   void sentFileMessage(
@@ -47,6 +51,7 @@ class ChatController {
     String recieverUserId,
     MessageEnum messageEnum,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref.read(userDataAuthProvider).whenData((value) =>
         chatRepository.sendFileMessage(
             context: context,
@@ -54,6 +59,9 @@ class ChatController {
             recieverUserId: recieverUserId,
             senderUserData: value!,
             messageEnum: messageEnum,
+            messageReply: messageReply,
+            isGroupChat: false,
             ref: ref));
+            ref.read(messageReplyProvider.state).update((state) => null);
   }
 }
