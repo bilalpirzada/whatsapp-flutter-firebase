@@ -48,7 +48,7 @@ class _ChatListState extends ConsumerState<ChatList> {
     _scrollController.dispose();
   }
 
-   void onMessageSwipe(
+  void onMessageSwipe(
     String message,
     bool isMe,
     MessageEnum messageEnum,
@@ -83,6 +83,14 @@ class _ChatListState extends ConsumerState<ChatList> {
             itemBuilder: (context, index) {
               final messageData = snapshot.data![index];
               var timeSent = DateFormat.Hm().format(messageData.timeSent);
+
+              if (!messageData.isSeen &&
+                  messageData.recieverid ==
+                      FirebaseAuth.instance.currentUser!.uid) {
+                ref.read(chatControllerProvider).setChatMessageSeen(
+                    context, widget.recieverUserId, messageData.messageId);
+              }
+
               //if me then..
               if (messageData.senderId ==
                   FirebaseAuth.instance.currentUser!.uid) {
@@ -93,7 +101,9 @@ class _ChatListState extends ConsumerState<ChatList> {
                   repliedText: messageData.repliedMessage,
                   username: messageData.repliedTo,
                   repliedMessageType: messageData.repliedMessageType,
-                  onLeftSwipe: () => onMessageSwipe(messageData.text, true, messageData.type),
+                  onLeftSwipe: () =>
+                      onMessageSwipe(messageData.text, true, messageData.type),
+                isSeen: messageData.isSeen
                 );
               }
               return SenderMessageCard(
@@ -103,9 +113,8 @@ class _ChatListState extends ConsumerState<ChatList> {
                 repliedText: messageData.repliedMessage,
                 username: messageData.repliedTo,
                 repliedMessageType: messageData.repliedMessageType,
-                  onRightSwipe: () =>
+                onRightSwipe: () =>
                     onMessageSwipe(messageData.text, false, messageData.type),
-               
               );
             },
           );

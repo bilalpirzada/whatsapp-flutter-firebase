@@ -12,10 +12,12 @@ class MyMessageCard extends StatelessWidget {
   final String repliedText;
   final String username;
   final MessageEnum repliedMessageType;
+  final bool isSeen;
 
   const MyMessageCard(
       {Key? key,
       required this.message,
+      required this.isSeen,
       required this.type,
       required this.date,
       required this.repliedText,
@@ -59,19 +61,23 @@ class MyMessageCard extends StatelessWidget {
                           username,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 3,),
+                        const SizedBox(
+                          height: 3,
+                        ),
                         Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: backgroundColor.withOpacity(0.5),
-                          borderRadius:const BorderRadius.all(Radius.circular(5))
-                          ),
-                          
+                          decoration: BoxDecoration(
+                              color: backgroundColor.withOpacity(0.5),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5))),
                           child: DisplayTextImageGIF(
                             message: repliedText,
                             type: repliedMessageType,
                           ),
                         ),
-                        const SizedBox(height: 8,)
+                        const SizedBox(
+                          height: 8,
+                        )
                       ],
                       DisplayTextImageGIF(
                         message: message,
@@ -95,10 +101,10 @@ class MyMessageCard extends StatelessWidget {
                       const SizedBox(
                         width: 5,
                       ),
-                      const Icon(
-                        Icons.done_all,
+                       Icon(
+                       isSeen ? Icons.done_all : Icons.done,
                         size: 20,
-                        color: Colors.white60,
+                        color: isSeen ? Colors.blue : Colors.white60,
                       ),
                     ],
                   ),
