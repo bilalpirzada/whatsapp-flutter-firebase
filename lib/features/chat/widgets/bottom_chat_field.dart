@@ -17,8 +17,10 @@ import '../../../common/enums/message_enum.dart';
 
 class BottomChatField extends ConsumerStatefulWidget {
   final String recieverUserId;
+  final bool isGroupChat;
   const BottomChatField({
     required this.recieverUserId,
+    required this.isGroupChat,
     Key? key,
   }) : super(key: key);
 
@@ -63,7 +65,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void sendTextMessage() async {
     if (isShowSendButton) {
       ref.read(chatControllerProvider).sentTextMessage(
-          context, _messageController.text.trim(), widget.recieverUserId);
+            context,
+            _messageController.text.trim(),
+            widget.recieverUserId,
+            widget.isGroupChat,
+          );
       setState(() {
         _messageController.text = "";
         isShowSendButton = false;
@@ -98,9 +104,13 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   }
 
   void sendFileMessage(File file, MessageEnum messageEnum) {
-    ref
-        .read(chatControllerProvider)
-        .sentFileMessage(context, file, widget.recieverUserId, messageEnum);
+    ref.read(chatControllerProvider).sentFileMessage(
+          context,
+          file,
+          widget.recieverUserId,
+          messageEnum,
+          widget.isGroupChat,
+        );
   }
 
   void selectImage() async {
@@ -161,7 +171,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     final isShowMessageReply = messageReply != null;
     return Column(
       children: [
-        isShowMessageReply ? const MessageReplyPreview() :const SizedBox(),
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(

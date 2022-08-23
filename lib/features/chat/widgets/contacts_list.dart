@@ -41,7 +41,8 @@ class ContactsList extends ConsumerWidget {
                                   context, MobileChatScreen.routeName,
                                   arguments: {
                                     'name': groupData.name,
-                                    'uid': groupData.groupId
+                                    'uid': groupData.groupId,
+                                    'isGroupChat': true,
                                   });
                             },
                             child: Padding(
@@ -102,7 +103,8 @@ class ContactsList extends ConsumerWidget {
                                   context, MobileChatScreen.routeName,
                                   arguments: {
                                     'name': chatContactData.name,
-                                    'uid': chatContactData.contactId
+                                    'uid': chatContactData.contactId,
+                                    'isGroupChat': false,
                                   });
                             },
                             child: Padding(
