@@ -13,6 +13,7 @@ import 'package:whatsapp_ui/models/chat_contact.dart';
 import 'package:whatsapp_ui/models/message.dart';
 
 import '../../../common/repositories/common_firebase_storage_repository.dart';
+import '../../../models/group.dart';
 import '../../../models/user_model.dart';
 
 final chatRepositoryProvider = Provider(
@@ -51,6 +52,20 @@ class ChatRepository {
         );
       }
       return contacts;
+    });
+  }
+
+  Stream<List<Group>> getChatGroups() {
+    return firestore.collection('groups').snapshots().map((event) {
+      List<Group> groups = [];
+      for (var document in event.docs) {
+        var group = Group.fromMap(document.data());
+
+        if (group.membersUid.contains(auth.currentUser!.uid)) {
+          groups.add(group);
+        }
+      }
+      return groups;
     });
   }
 
@@ -125,20 +140,19 @@ class ChatRepository {
     required String recieverUserName,
   }) async {
     final message = Message(
-        senderId: auth.currentUser!.uid,
-        recieverid: recieverUserId,
-        text: text,
-        type: messageType,
-        timeSent: timeSent,
-        messageId: messageId,
-        isSeen: false,
-        repliedMessage: messageReply == null ? '' : messageReply.message,
-        repliedTo: messageReply == null
-            ? ''
-            : messageReply.isMe
-                ? senderUsername
-                : recieverUserName,
-        
+      senderId: auth.currentUser!.uid,
+      recieverid: recieverUserId,
+      text: text,
+      type: messageType,
+      timeSent: timeSent,
+      messageId: messageId,
+      isSeen: false,
+      repliedMessage: messageReply == null ? '' : messageReply.message,
+      repliedTo: messageReply == null
+          ? ''
+          : messageReply.isMe
+              ? senderUsername
+              : recieverUserName,
       repliedMessageType:
           messageReply == null ? MessageEnum.text : messageReply.messageEnum,
     );
@@ -183,17 +197,17 @@ class ChatRepository {
           senderUser, recieverUserData, text, timeSent, recieverUserId);
 
       _saveMessageToMessageSubcollection(
-          recieverUserId: recieverUserId,
-          text: text,
-          timeSent: timeSent,
-          messageType: MessageEnum.text,
-          messageId: messageId,
-          recieverUsername: recieverUserData.name,
-          username: senderUser.name,
-          messageReply: messageReply,
-          recieverUserName: recieverUserData.name,
-          senderUsername: senderUser.name,
-          );
+        recieverUserId: recieverUserId,
+        text: text,
+        timeSent: timeSent,
+        messageType: MessageEnum.text,
+        messageId: messageId,
+        recieverUsername: recieverUserData.name,
+        username: senderUser.name,
+        messageReply: messageReply,
+        recieverUserName: recieverUserData.name,
+        senderUsername: senderUser.name,
+      );
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
@@ -206,7 +220,7 @@ class ChatRepository {
     required UserModel senderUserData,
     required ProviderRef ref,
     required MessageEnum messageEnum,
-     required MessageReply? messageReply,
+    required MessageReply? messageReply,
     required bool isGroupChat,
   }) async {
     try {
@@ -254,17 +268,17 @@ class ChatRepository {
       );
 
       _saveMessageToMessageSubcollection(
-          recieverUserId: recieverUserId,
-          text: imageUrl,
-          timeSent: timeSent,
-          messageId: messageId,
-          username: senderUserData.name,
-          recieverUsername: recieverUserData.name,
-          messageType: messageEnum,
-          messageReply: messageReply,
-          recieverUserName: recieverUserData.name,
-          senderUsername: senderUserData.name,
-          );
+        recieverUserId: recieverUserId,
+        text: imageUrl,
+        timeSent: timeSent,
+        messageId: messageId,
+        username: senderUserData.name,
+        recieverUsername: recieverUserData.name,
+        messageType: messageEnum,
+        messageReply: messageReply,
+        recieverUserName: recieverUserData.name,
+        senderUsername: senderUserData.name,
+      );
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
