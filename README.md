@@ -24,6 +24,4 @@ After cloning this repository, migrate to ```whatsapp-flutter-ui``` folder. Ther
   flutter run -d chrome --web-renderer html (to see the best output)
 ```
     
-## Feedback
 
-If you have any feedback, please reach out to me at namanrivaan@gmail.com
